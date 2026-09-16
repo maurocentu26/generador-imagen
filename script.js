@@ -103,12 +103,28 @@ const zoomRange = document.getElementById('zoomRange');
 function updateZoom() {
   const scale = parseFloat(zoomRange.value);
   template.style.transform = `scale(${scale})`;
+  // Compensar el espacio vacío que deja el elemento escalado
   template.style.marginBottom = `-${1000 * (1 - scale)}px`;
+  template.style.marginRight = `-${800 * (1 - scale)}px`;
+}
+
+/** Calcula el zoom óptimo para que el flyer entre en el área visible */
+function autoZoom() {
+  const isMobile = window.innerWidth <= 900;
+  if (isMobile) {
+    // En mobile: zoom para que el ancho del flyer (800px) quepa en la pantalla menos padding
+    const availableW = window.innerWidth - 24;
+    const scale = Math.min(availableW / 800, 0.95);
+    zoomRange.value = Math.round(scale * 20) / 20; // redondear a paso de 0.05
+  } else {
+    zoomRange.value = 0.6;
+  }
+  updateZoom();
 }
 
 zoomRange.addEventListener('input', updateZoom);
-zoomRange.value = window.innerWidth <= 900 ? 0.4 : 0.6;
-updateZoom();
+autoZoom();
+window.addEventListener('resize', autoZoom);
 
 // ─── MODAL MOBILE ─────────────────────────────────────────────────────────────
 
@@ -116,8 +132,20 @@ const fab = document.getElementById('fabPreview');
 const modal = document.getElementById('previewModal');
 const closeBtn = document.getElementById('closeModalBtn');
 
-fab.addEventListener('click', () => modal.classList.add('modal-active'));
+fab.addEventListener('click', () => {
+  modal.classList.add('modal-active');
+  // Re-calcular zoom al abrir (por si cambió la orientación)
+  autoZoom();
+});
 closeBtn.addEventListener('click', () => modal.classList.remove('modal-active'));
+
+// El botón de descarga dentro del modal (mobile) dispara el mismo evento
+const downloadBtnModal = document.getElementById('downloadBtnModal');
+if (downloadBtnModal) {
+  downloadBtnModal.addEventListener('click', () => {
+    document.getElementById('downloadBtn').click();
+  });
+}
 
 // ─── AUTOGUARDADO (ÚLTIMAS 5) ─────────────────────────────────────────────────
 
