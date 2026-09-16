@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generador de Flyers - Coya TV</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@500;700&family=Raleway:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="controls">
+  <h2 class="title-header">📝 Datos del Flyer</h2>
+  <p class="subtitle">Generador de gráficas de Coya TV</p>
+
+  <div class="form-group">
+    <label>Foto del Invitado:</label>
+    <input type="file" id="inPhoto" accept="image/*">
+  </div>
+  <div class="form-group">
+    <label>Fecha (Banner inferior):</label>
+    <input type="text" id="inDate" placeholder="Ej: Este jueves 17 de septiembre nos visita:">
+  </div>
+  <div class="form-group">
+    <label>Nombre del Invitado:</label>
+    <input type="text" id="inName" placeholder="Ej: Juan Pérez">
+  </div>
+  <div class="form-group">
+    <label>Descripción / Cargo:</label>
+    <textarea id="inDesc" rows="2" placeholder="Ej: Periodista y escritor"></textarea>
+  </div>
+
+  <button id="downloadBtn">💾 Descargar Flyer Final</button>
+
+  <hr>
+
+  <button id="toggleHistory" style="background:#444;">🕐 Ver últimas plantillas</button>
+  <div id="historySection" style="display:none;">
+    <div id="historyList"></div>
+  </div>
+</div>
+
+<!-- Botón Flotante para Celulares -->
+<button id="fabPreview" class="fab">👀 Ver Previa</button>
+
+<!-- Modal / Wrapper para Vista Previa -->
+<div id="previewModal" class="preview-wrapper">
+  <div class="preview-header">
+    <h2>👀 Vista Previa</h2>
+    <div class="preview-actions">
+      <span>Zoom: <input type="range" id="zoomRange" min="0.2" max="1" step="0.05" value="0.6"></span>
+      <button id="closeModalBtn" class="close-btn">&times; Cerrar</button>
+    </div>
+  </div>
+
+  <!-- PLANTILLA HTML RECREADA -->
+  <div id="flyer-template">
+    <div class="t-purple-bg"></div>
+    <div class="t-top-banner">Contrato Social</div>
+
+    <!-- La foto se renderiza en un canvas interno para fidelidad al exportar -->
+    <div class="t-image-box" id="photoBox">
+    </div>
+
+    <div class="t-right-texts">
+      <div class="line1">EN VIVO POR YOUTUBE<br>EN EL CANAL<br>"COYA TV"</div>
+      <div class="line2">MARTES Y JUEVES DE<br>17:00 a 19:00 hs</div>
+    </div>
+
+    <div class="t-yt">
+      <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+      youtube.com/elcoyatvok
+    </div>
+
+    <div class="t-date-banner" id="outDate"></div>
+
+    <div class="t-bottom-info">
+      <div class="name" id="outName"></div>
+      <div class="desc" id="outDesc"></div>
+    </div>
+
+    <div class="t-bottom-right">
+      <img src="data:image/png;base64,LOGO_PLACEHOLDER" alt="Logo Coya TV">
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

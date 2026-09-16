@@ -1,8 +1,45 @@
+// ─── ESTADO ───────────────────────────────────────────────────────────────────
+const HISTORY_KEY = 'coyatv_history';
+const MAX_HISTORY = 5;
+
+let currentPhotoDataUrl = null; // foto actual en base64
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+
+/** Lee los valores del formulario */
+function getFormValues() {
+  return {
+    date: document.getElementById('inDate').value,
+    name: document.getElementById('inName').value,
+    desc: document.getElementById('inDesc').value,
+    photo: currentPhotoDataUrl
+  };
+}
+
+/** Aplica valores al formulario + plantilla */
+function applyValues(v) {
+  document.getElementById('inDate').value = v.date || '';
+  document.getElementById('inName').value = v.name || '';
+  document.getElementById('inDesc').value = v.desc || '';
+
+  document.getElementById('outDate').innerHTML = (v.date || '').replace(/\n/g, '<br>');
+  document.getElementById('outName').innerHTML = (v.name || '').replace(/\n/g, '<br>');
+  document.getElementById('outDesc').innerHTML = (v.desc || '').replace(/\n/g, '<br>');
+
+  if (v.photo) {
+    currentPhotoDataUrl = v.photo;
+    renderPhotoOnCanvas(v.photo);
+  }
+}
+
+// ─── SINCRONIZACIÓN TEXTO ─────────────────────────────────────────────────────
+
 function bindText(inputId, outId) {
   const el = document.getElementById(inputId);
   if (el) {
     el.addEventListener('input', (e) => {
       document.getElementById(outId).innerHTML = e.target.value.replace(/\n/g, '<br>');
+      autosave();
     });
   }
 }
@@ -10,21 +47,56 @@ function bindText(inputId, outId) {
 bindText('inDate', 'outDate');
 bindText('inName', 'outName');
 bindText('inDesc', 'outDesc');
-bindText('inRight1', 'outRight1');
-bindText('inRight2', 'outRight2');
 
-// Carga de imagen
+// ─── FOTO: render con canvas interno para fix de object-fit ───────────────────
+
+/**
+ * Dibuja la foto del invitado en un <canvas> interno (dentro de .t-image-box)
+ * simulando object-fit: cover. Esto hace que html2canvas la capture correctamente.
+ */
+function renderPhotoOnCanvas(dataUrl) {
+  const box = document.getElementById('photoBox');
+  const W = box.offsetWidth || 360;
+  const H = box.offsetHeight || 520;
+
+  // Reemplazamos el contenido del box con un canvas
+  box.innerHTML = '';
+  const cvs = document.createElement('canvas');
+  cvs.width = W;
+  cvs.height = H;
+  cvs.style.width = '100%';
+  cvs.style.height = '100%';
+  cvs.style.display = 'block';
+  box.appendChild(cvs);
+
+  const ctx = cvs.getContext('2d');
+  const img = new Image();
+  img.onload = () => {
+    const scale = Math.max(W / img.width, H / img.height);
+    const sw = img.width * scale;
+    const sh = img.height * scale;
+    const sx = (W - sw) / 2;
+    const sy = (H - sh) / 2;
+    ctx.clearRect(0, 0, W, H);
+    ctx.drawImage(img, sx, sy, sw, sh);
+  };
+  img.src = dataUrl;
+}
+
 document.getElementById('inPhoto').addEventListener('change', function(e) {
   const file = e.target.files[0];
   if (!file) return;
   const reader = new FileReader();
   reader.onload = function(event) {
-    document.getElementById('outPhoto').src = event.target.result;
-  }
+    currentPhotoDataUrl = event.target.result;
+    renderPhotoOnCanvas(currentPhotoDataUrl);
+    autosave();
+  };
   reader.readAsDataURL(file);
 });
 
-// Lógica de Zoom
+// ─── ZOOM ─────────────────────────────────────────────────────────────────────
+
 const template = document.getElementById('flyer-template');
 const zoomRange = document.getElementById('zoomRange');
 
@@ -35,57 +107,136 @@ function updateZoom() {
 }
 
 zoomRange.addEventListener('input', updateZoom);
-
-// Ajuste automático para mobile
-if (window.innerWidth <= 900) {
-  zoomRange.value = 0.4;
-} else {
-  zoomRange.value = 0.6;
-}
+zoomRange.value = window.innerWidth <= 900 ? 0.4 : 0.6;
 updateZoom();
 
-// Lógica Modal Mobile (FAB)
+// ─── MODAL MOBILE ─────────────────────────────────────────────────────────────
+
 const fab = document.getElementById('fabPreview');
 const modal = document.getElementById('previewModal');
 const closeBtn = document.getElementById('closeModalBtn');
 
-fab.addEventListener('click', () => {
-  modal.classList.add('modal-active');
-});
+fab.addEventListener('click', () => modal.classList.add('modal-active'));
+closeBtn.addEventListener('click', () => modal.classList.remove('modal-active'));
 
-closeBtn.addEventListener('click', () => {
-  modal.classList.remove('modal-active');
-});
+// ─── AUTOGUARDADO (ÚLTIMAS 5) ─────────────────────────────────────────────────
 
-// Descargar con html2canvas
+function autosave() {
+  const values = getFormValues();
+  if (!values.name && !values.date && !values.desc && !values.photo) return;
+
+  let history = loadHistory();
+
+  // Evitar duplicados exactos al tope
+  const lastEntry = history[0];
+  if (
+    lastEntry &&
+    lastEntry.name === values.name &&
+    lastEntry.date === values.date &&
+    lastEntry.desc === values.desc &&
+    lastEntry.photo === values.photo
+  ) return;
+
+  history.unshift({ ...values, savedAt: new Date().toLocaleString('es-AR') });
+  if (history.length > MAX_HISTORY) history = history.slice(0, MAX_HISTORY);
+
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  renderHistory();
+}
+
+function loadHistory() {
+  try {
+    return JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function renderHistory() {
+  const container = document.getElementById('historyList');
+  const history = loadHistory();
+  container.innerHTML = '';
+
+  if (history.length === 0) {
+    container.innerHTML = '<p class="no-history">Aún no hay plantillas guardadas.</p>';
+    return;
+  }
+
+  history.forEach((entry, idx) => {
+    const card = document.createElement('div');
+    card.className = 'history-card';
+    card.innerHTML = `
+      <div class="history-thumb">
+        ${entry.photo ? `<img src="${entry.photo}" alt="foto">` : '<div class="no-photo">Sin foto</div>'}
+      </div>
+      <div class="history-info">
+        <strong>${entry.name || '(sin nombre)'}</strong>
+        <span>${entry.date || ''}</span>
+        <small>${entry.savedAt}</small>
+      </div>
+      <button class="history-restore-btn" data-idx="${idx}">Restaurar</button>
+    `;
+    container.appendChild(card);
+  });
+
+  document.querySelectorAll('.history-restore-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const idx = parseInt(e.target.dataset.idx);
+      applyValues(loadHistory()[idx]);
+    });
+  });
+}
+
+// ─── DESCARGA ─────────────────────────────────────────────────────────────────
+
 document.getElementById('downloadBtn').addEventListener('click', () => {
   const btn = document.getElementById('downloadBtn');
   const oldText = btn.innerText;
-  btn.innerText = "⏳ Generando imagen...";
-  
-  const originalTransform = template.style.transform;
-  const originalMargin = template.style.marginBottom;
-  
-  template.style.transform = 'none';
-  template.style.marginBottom = '0';
+  btn.innerText = '⏳ Generando imagen...';
+  btn.disabled = true;
 
-  html2canvas(template, { 
-    scale: 2, 
+  // Guardamos antes de descargar
+  autosave();
+
+  html2canvas(template, {
+    scale: 2,
     useCORS: true,
-    backgroundColor: null 
+    allowTaint: true,
+    backgroundColor: null,
+    onclone: (clonedDoc) => {
+      const t = clonedDoc.getElementById('flyer-template');
+      t.style.transform = 'none';
+      t.style.marginBottom = '0';
+    }
   }).then(canvas => {
     const link = document.createElement('a');
     let guestName = document.getElementById('inName').value;
-    if(!guestName || guestName === "Nombre Invitado") guestName = "invitado";
+    if (!guestName || guestName === 'Nombre Invitado') guestName = 'invitado';
     link.download = `flyer_coyatv_${guestName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
-    
-    template.style.transform = originalTransform;
-    template.style.marginBottom = originalMargin;
+
     btn.innerText = oldText;
-    
-    // Cerramos el modal en mobile luego de descargar
+    btn.disabled = false;
     modal.classList.remove('modal-active');
+  }).catch(err => {
+    console.error('Error al generar imagen:', err);
+    btn.innerText = oldText;
+    btn.disabled = false;
+    alert('Hubo un error al generar la imagen. Revisá la consola para más detalles.');
   });
 });
+
+// ─── TOGGLE HISTORIAL ─────────────────────────────────────────────────────────
+
+document.getElementById('toggleHistory').addEventListener('click', () => {
+  const section = document.getElementById('historySection');
+  const isOpen = section.style.display !== 'none';
+  section.style.display = isOpen ? 'none' : 'block';
+  document.getElementById('toggleHistory').innerText = isOpen
+    ? '🕐 Ver últimas plantillas'
+    : '🕐 Ocultar historial';
+});
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+renderHistory();
