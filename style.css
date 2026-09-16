@@ -1,0 +1,173 @@
+:root {
+  --bg: #f7f9fc;
+  --panel-bg: #ffffff;
+  --border: #e3e8ee;
+  --text: #3c4257;
+  --primary: #635bff;
+}
+
+body { 
+  font-family: 'Montserrat', sans-serif;
+  margin: 0; 
+  padding: 20px; 
+  background-color: var(--bg);
+  color: var(--text);
+  display: flex; 
+  flex-wrap: wrap;
+  gap: 30px; 
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.controls { 
+  flex: 1; 
+  min-width: 300px;
+  max-width: 380px; 
+  background: var(--panel-bg);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+  display: flex; 
+  flex-direction: column; 
+  gap: 15px; 
+  overflow-y: auto;
+  height: calc(100vh - 40px);
+}
+
+.title-header { margin-top:0; font-family:sans-serif; }
+.subtitle { font-size: 0.85rem; color: #666; margin-top:-10px; font-family:sans-serif; }
+
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+label { font-weight: 600; font-size: 0.85rem; color: #444; font-family: sans-serif; }
+input[type="text"], textarea, input[type="file"] { 
+  padding: 10px; border: 1px solid var(--border); border-radius: 6px; 
+  font-size: 0.9rem; font-family: inherit;
+}
+hr { border: 0; border-top: 1px solid #ddd; margin: 10px 0; width: 100%; }
+button { 
+  padding: 14px; background: var(--primary); color: white; border: none; 
+  border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: 600;
+  font-family: sans-serif; transition: background 0.2s;
+}
+button:hover { background: #5046e5; }
+
+.preview-wrapper { 
+  flex: 2; 
+  min-width: 500px;
+  background: var(--panel-bg);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  height: calc(100vh - 40px);
+}
+
+.preview-header {
+  width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-family:sans-serif;
+}
+.preview-header h2 { margin: 0; }
+.preview-actions { display: flex; align-items: center; gap: 15px; font-size: 0.8rem; color: #666; }
+
+.close-btn { display: none; padding: 5px 10px; background: #e2002f; }
+.fab {
+  display: none; position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+  border-radius: 50px; padding: 15px 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* -------------------------
+   ESTILOS DE LA PLANTILLA 
+   ------------------------- */
+#flyer-template {
+  width: 800px;
+  height: 1000px;
+  background-color: #f1f1f1;
+  position: relative;
+  overflow: hidden;
+  transform-origin: top center;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+.t-purple-bg {
+  position: absolute; left: 0; top: 0; width: 56%; height: 77%;
+  background-color: #a879cc;
+  background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.08"/></svg>');
+}
+
+.t-top-banner {
+  position: absolute; left: 0; top: 20px; width: 65%; height: 75px;
+  background: linear-gradient(to right, #4c08b5, #8537a6);
+  color: white; font-family: 'Montserrat', sans-serif; font-size: 50px; font-weight: 700;
+  display: flex; align-items: center; padding-left: 45px; box-sizing: border-box;
+}
+
+.t-image-box {
+  position: absolute; left: 40px; top: 150px; width: 360px; height: 520px;
+  background-color: #dbe4d5; overflow: hidden;
+}
+.t-image-box img { width: 100%; height: 100%; object-fit: cover; }
+
+.t-right-texts {
+  position: absolute; right: 30px; top: 250px; width: 290px; text-align: center;
+  font-family: 'Anton', sans-serif; text-transform: uppercase;
+}
+.t-right-texts .line1 { font-size: 40px; font-weight: 400; line-height: 1.1; color: #000; margin-bottom: 70px; letter-spacing: 1px; }
+.t-right-texts .line2 { font-size: 34px; font-weight: 400; line-height: 1.1; color: #6d1b9b; letter-spacing: 1px; }
+
+.t-yt {
+  position: absolute; right: 40px; top: 680px; display: flex; align-items: center; gap: 8px;
+  font-size: 18px; color: #000; font-weight: 700; font-family: 'Montserrat', sans-serif;
+}
+.t-yt svg { width: 32px; height: 32px; fill: red; }
+
+.t-date-banner {
+  position: absolute; left: 0; top: 77%; width: 71%; height: 50px;
+  background: linear-gradient(to right, #4c08b5, #8537a6);
+  color: white; display: flex; align-items: center; justify-content: center;
+  font-family: 'Montserrat', sans-serif; font-size: 28px; font-weight: 700;
+}
+
+.t-bottom-info {
+  position: absolute; left: 0; top: 85%; width: 71%; text-align: center;
+}
+.t-bottom-info .name {
+  font-family: 'Anton', sans-serif; font-size: 52px; font-weight: 400; color: #000; margin: 0; line-height: 1; letter-spacing: 1px; text-transform: uppercase;
+}
+.t-bottom-info .desc {
+  font-family: 'Raleway', sans-serif; font-size: 26px; font-weight: 500; color: #555; margin: 5px 0 0 0;
+}
+
+.t-bottom-right {
+  position: absolute; right: 0; bottom: 0; width: 29%; height: 23%; background-color: white; overflow: hidden;
+}
+.t-bottom-right img { width: 100%; height: 100%; object-fit: contain; }
+
+/* -------------------------
+   RESPONSIVE (MOBILE)
+   ------------------------- */
+@media (max-width: 900px) {
+  body { overflow: auto; height: auto; }
+  .controls { max-width: 100%; min-width: 100%; height: auto; box-shadow: none; padding: 15px; margin-bottom: 80px; }
+  
+  .fab { display: block; }
+
+  .preview-wrapper {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000;
+    border-radius: 0; padding: 10px; background: rgba(0,0,0,0.9);
+    display: none; /* hidden by default on mobile */
+    align-items: center; justify-content: flex-start;
+    box-sizing: border-box; overflow-y: auto;
+  }
+  
+  .preview-wrapper.modal-active { display: flex; }
+  
+  .preview-header { color: white; margin-bottom: 10px; width: 100%; }
+  .close-btn { display: inline-block; cursor: pointer; border-radius: 4px; padding: 8px 12px; }
+  
+  #flyer-template {
+    margin: 0 auto;
+  }
+}
