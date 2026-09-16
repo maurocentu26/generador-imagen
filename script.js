@@ -203,10 +203,30 @@ document.getElementById('downloadBtn').addEventListener('click', () => {
     useCORS: true,
     allowTaint: true,
     backgroundColor: null,
+    // Dimensiones exactas de la plantilla — evita cualquier recorte del contenedor padre
+    width: 800,
+    height: 1000,
     onclone: (clonedDoc) => {
       const t = clonedDoc.getElementById('flyer-template');
+
+      // Sacamos el elemento del contenedor con overflow/height limitados
+      // y lo movemos directamente al body sin restricciones
       t.style.transform = 'none';
       t.style.marginBottom = '0';
+      t.style.position = 'absolute';
+      t.style.top = '0';
+      t.style.left = '0';
+      t.style.width = '800px';
+      t.style.height = '1000px';
+      t.style.overflow = 'hidden';
+      t.style.zIndex = '-1';
+
+      clonedDoc.body.style.margin = '0';
+      clonedDoc.body.style.padding = '0';
+      clonedDoc.body.style.overflow = 'visible';
+      clonedDoc.body.style.height = 'auto';
+      clonedDoc.body.style.width = '800px';
+      clonedDoc.body.appendChild(t);
     }
   }).then(canvas => {
     const link = document.createElement('a');
