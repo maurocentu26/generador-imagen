@@ -44,26 +44,46 @@
 <!-- Botón Flotante para Celulares -->
 <button id="fabPreview" class="fab">👀 Ver Previa</button>
 
-<!-- Modal / Wrapper para Vista Previa -->
+<!-- ═══ MODAL MOBILE (muestra imagen renderizada) ═══ -->
+<div id="mobileModal" class="mobile-modal" aria-hidden="true">
+  <div class="mobile-modal__backdrop" id="mobileModalBackdrop"></div>
+  <div class="mobile-modal__card">
+    <div class="mobile-modal__header">
+      <span class="mobile-modal__title">Vista Previa</span>
+      <button class="mobile-modal__close" id="mobileModalClose" aria-label="Cerrar">&times;</button>
+    </div>
+    <div class="mobile-modal__body">
+      <!-- Estado de carga -->
+      <div class="mobile-modal__loading" id="mobileModalLoading">
+        <div class="spinner"></div>
+        <p>Generando vista previa…</p>
+      </div>
+      <!-- Imagen resultante -->
+      <img class="mobile-modal__img" id="mobileModalImg" src="" alt="Vista previa del flyer" style="display:none;">
+    </div>
+    <div class="mobile-modal__footer">
+      <button id="mobileModalDownload" class="mobile-modal__dl-btn" style="display:none;">
+        💾 Descargar Flyer
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VISTA PREVIA DESKTOP ═══ -->
 <div id="previewModal" class="preview-wrapper">
   <div class="preview-header">
     <h2>👀 Vista Previa</h2>
     <div class="preview-actions">
       <span>Zoom: <input type="range" id="zoomRange" min="0.2" max="1" step="0.05" value="0.6"></span>
-      <button id="closeModalBtn" class="close-btn">&times; Cerrar</button>
     </div>
   </div>
 
-  <!-- Zona con scroll para el template -->
   <div class="preview-scroll-area">
-    <!-- PLANTILLA HTML RECREADA -->
     <div id="flyer-template">
       <div class="t-purple-bg"></div>
       <div class="t-top-banner">Contrato Social</div>
 
-      <!-- La foto se renderiza en un canvas interno para fidelidad al exportar -->
-      <div class="t-image-box" id="photoBox">
-      </div>
+      <div class="t-image-box" id="photoBox"></div>
 
       <div class="t-right-texts">
         <div class="line1">EN VIVO POR YOUTUBE<br>EN EL CANAL<br>"COYA TV"</div>
@@ -86,11 +106,6 @@
         <img src="data:image/png;base64,LOGO_PLACEHOLDER" alt="Logo Coya TV">
       </div>
     </div>
-  </div>
-
-  <!-- Barra de descarga dentro del modal (solo visible en mobile) -->
-  <div class="modal-download-bar">
-    <button id="downloadBtnModal">💾 Descargar Flyer</button>
   </div>
 </div>
 

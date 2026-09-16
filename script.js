@@ -126,26 +126,85 @@ zoomRange.addEventListener('input', updateZoom);
 autoZoom();
 window.addEventListener('resize', autoZoom);
 
-// ─── MODAL MOBILE ─────────────────────────────────────────────────────────────
+// ─── MODAL MOBILE (imagen renderizada) ────────────────────────────────────────
 
-const fab = document.getElementById('fabPreview');
-const modal = document.getElementById('previewModal');
-const closeBtn = document.getElementById('closeModalBtn');
+const fab             = document.getElementById('fabPreview');
+const mobileModal     = document.getElementById('mobileModal');
+const mobileModalClose= document.getElementById('mobileModalClose');
+const mobileModalBackdrop = document.getElementById('mobileModalBackdrop');
+const mobileModalLoading  = document.getElementById('mobileModalLoading');
+const mobileModalImg      = document.getElementById('mobileModalImg');
+const mobileModalDownload = document.getElementById('mobileModalDownload');
 
-fab.addEventListener('click', () => {
-  modal.classList.add('modal-active');
-  // Re-calcular zoom al abrir (por si cambió la orientación)
-  autoZoom();
-});
-closeBtn.addEventListener('click', () => modal.classList.remove('modal-active'));
+let lastRenderedDataUrl = null; // caché de la última imagen generada
 
-// El botón de descarga dentro del modal (mobile) dispara el mismo evento
-const downloadBtnModal = document.getElementById('downloadBtnModal');
-if (downloadBtnModal) {
-  downloadBtnModal.addEventListener('click', () => {
-    document.getElementById('downloadBtn').click();
+function openMobileModal() {
+  // Mostrar modal con spinner mientras renderiza
+  mobileModal.classList.add('open');
+  mobileModal.setAttribute('aria-hidden', 'false');
+  mobileModalLoading.style.display = 'flex';
+  mobileModalImg.style.display = 'none';
+  mobileModalDownload.style.display = 'none';
+
+  // Renderizar el flyer a imagen
+  html2canvas(template, {
+    scale: 2,
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: null,
+    width: 800,
+    height: 1000,
+    onclone: (clonedDoc) => {
+      const t = clonedDoc.getElementById('flyer-template');
+      t.style.transform = 'none';
+      t.style.marginBottom = '0';
+      t.style.marginRight = '0';
+      t.style.position = 'absolute';
+      t.style.top = '0';
+      t.style.left = '0';
+      t.style.width = '800px';
+      t.style.height = '1000px';
+      t.style.overflow = 'hidden';
+      t.style.zIndex = '-1';
+      clonedDoc.body.style.margin = '0';
+      clonedDoc.body.style.padding = '0';
+      clonedDoc.body.style.overflow = 'visible';
+      clonedDoc.body.style.height = 'auto';
+      clonedDoc.body.style.width = '800px';
+      clonedDoc.body.appendChild(t);
+    }
+  }).then(canvas => {
+    lastRenderedDataUrl = canvas.toDataURL('image/png');
+    mobileModalImg.src = lastRenderedDataUrl;
+    mobileModalLoading.style.display = 'none';
+    mobileModalImg.style.display = 'block';
+    mobileModalDownload.style.display = 'block';
+  }).catch(err => {
+    console.error('Error al generar vista previa:', err);
+    mobileModalLoading.innerHTML = '<p style="color:#f88">Error al generar la vista previa.</p>';
   });
 }
+
+function closeMobileModal() {
+  mobileModal.classList.remove('open');
+  mobileModal.setAttribute('aria-hidden', 'true');
+}
+
+fab.addEventListener('click', openMobileModal);
+mobileModalClose.addEventListener('click', closeMobileModal);
+mobileModalBackdrop.addEventListener('click', closeMobileModal);
+
+// Descargar desde el modal mobile usando la imagen ya renderizada
+mobileModalDownload.addEventListener('click', () => {
+  if (!lastRenderedDataUrl) return;
+  const link = document.createElement('a');
+  let guestName = document.getElementById('inName').value;
+  if (!guestName) guestName = 'invitado';
+  link.download = `flyer_coyatv_${guestName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.png`;
+  link.href = lastRenderedDataUrl;
+  link.click();
+  closeMobileModal();
+});
 
 // ─── AUTOGUARDADO (ÚLTIMAS 5) ─────────────────────────────────────────────────
 
