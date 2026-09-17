@@ -12,9 +12,9 @@
 
 <div class="controls">
   <h2 class="title-header">📝 Datos del Flyer</h2>
-  <p class="subtitle">Generador de gráficas de Coya TV</p>
+  <p class="subtitle" id="stepSubtitle">Generador de gráficas de Coya TV</p>
 
-  <div class="form-group">
+  <div class="form-group" style="display:none;">
     <label>Diseño del Flyer:</label>
     <select id="inTheme" style="padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.9rem; font-family: inherit;">
       <option value="theme-classic">Clásico (Original)</option>
@@ -23,24 +23,29 @@
     </select>
   </div>
 
-  <div class="form-group">
+  <div class="form-group step-group" data-step="1">
     <label>Foto del Invitado:</label>
     <input type="file" id="inPhoto" accept="image/*">
   </div>
-  <div class="form-group">
+  <div class="form-group step-group" data-step="2">
     <label>Fecha (Banner inferior):</label>
     <input type="text" id="inDate" placeholder="Ej: Este jueves 17 de septiembre nos visita:">
   </div>
-  <div class="form-group">
+  <div class="form-group step-group" data-step="3">
     <label>Nombre del Invitado:</label>
     <input type="text" id="inName" placeholder="Ej: Juan Pérez">
   </div>
-  <div class="form-group">
+  <div class="form-group step-group" data-step="4">
     <label>Descripción / Cargo:</label>
     <textarea id="inDesc" rows="2" placeholder="Ej: Periodista y escritor"></textarea>
   </div>
 
-  <button id="downloadBtn">💾 Descargar Flyer Final</button>
+  <div class="step-nav" id="stepNav" style="display: none; justify-content: space-between; gap: 10px; margin-top: 10px;">
+    <button id="btnPrev" style="background:#666; flex:1;">&larr; Anterior</button>
+    <button id="btnNext" style="flex:1;">Siguiente &rarr;</button>
+  </div>
+
+  <button id="downloadBtn" class="desktop-only">💾 Descargar Flyer Final</button>
 
   <hr>
 

@@ -147,6 +147,56 @@ document.getElementById('inPhoto').addEventListener('change', function(e) {
   reader.readAsDataURL(file);
 });
 
+// ─── WIZARD MOBILE ────────────────────────────────────────────────────────────
+
+let currentStep = 1;
+const totalSteps = 4;
+const btnNext = document.getElementById('btnNext');
+const btnPrev = document.getElementById('btnPrev');
+const stepSubtitle = document.getElementById('stepSubtitle');
+
+function updateWizard() {
+  document.querySelectorAll('.step-group').forEach(el => {
+    if (parseInt(el.dataset.step) === currentStep) {
+      el.classList.add('active');
+    } else {
+      el.classList.remove('active');
+    }
+  });
+
+  if (window.innerWidth <= 900) {
+    stepSubtitle.innerText = `Paso ${currentStep} de ${totalSteps}`;
+    document.getElementById('stepNav').style.display = 'flex';
+  } else {
+    stepSubtitle.innerText = 'Generador de gráficas de Coya TV';
+    document.getElementById('stepNav').style.display = 'none';
+  }
+
+  btnPrev.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+  btnNext.innerText = currentStep === totalSteps ? 'Ver Previa 👀' : 'Siguiente \u2192';
+}
+
+if (btnNext && btnPrev) {
+  btnNext.addEventListener('click', () => {
+    if (currentStep < totalSteps) {
+      currentStep++;
+      updateWizard();
+    } else {
+      if (typeof openMobileModal === 'function') openMobileModal();
+    }
+  });
+  
+  btnPrev.addEventListener('click', () => {
+    if (currentStep > 1) {
+      currentStep--;
+      updateWizard();
+    }
+  });
+  
+  window.addEventListener('resize', updateWizard);
+  updateWizard();
+}
+
 // ─── ZOOM ─────────────────────────────────────────────────────────────────────
 
 const template = document.getElementById('flyer-template');

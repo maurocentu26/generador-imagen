@@ -378,6 +378,12 @@ button:hover { background: #5046e5; }
   textarea { min-height: 70px; }
   label { font-size: 0.9rem; }
 
+  /* Multi-step form (Wizard) en móvil */
+  .step-group { display: none; }
+  .step-group.active { display: flex; }
+  .step-nav { display: flex !important; }
+  #stepSubtitle { color: #8537a6; font-weight: bold; }
+
   /* El botón de descarga en desktop se oculta; el del modal toma su lugar */
   #downloadBtn { display: none; }
   #toggleHistory { font-size: 0.9rem; padding: 12px; }
