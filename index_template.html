@@ -15,6 +15,15 @@
   <p class="subtitle">Generador de gráficas de Coya TV</p>
 
   <div class="form-group">
+    <label>Diseño del Flyer:</label>
+    <select id="inTheme" style="padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.9rem; font-family: inherit;">
+      <option value="theme-classic">Clásico (Original)</option>
+      <option value="theme-dark">Modo Oscuro / Neón</option>
+      <option value="theme-minimal">Minimalista Limpio</option>
+    </select>
+  </div>
+
+  <div class="form-group">
     <label>Foto del Invitado:</label>
     <input type="file" id="inPhoto" accept="image/*">
   </div>
@@ -79,7 +88,7 @@
   </div>
 
   <div class="preview-scroll-area">
-    <div id="flyer-template">
+    <div id="flyer-template" class="theme-classic">
       <div class="t-purple-bg"></div>
       <div class="t-top-banner">Contrato Social</div>
 

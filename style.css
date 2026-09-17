@@ -171,6 +171,59 @@ button:hover { background: #5046e5; }
 .t-bottom-right img { width: 100%; height: 100%; object-fit: contain; }
 
 /* ═══════════════════════════════════════════
+   TEMAS ALTERNATIVOS
+   ═══════════════════════════════════════════ */
+
+/* ─── TEMA: DARK / NEÓN ─── */
+#flyer-template.theme-dark { background-color: #121212; }
+#flyer-template.theme-dark .t-purple-bg {
+  background: radial-gradient(circle at 30% 30%, #4c08b5 0%, transparent 60%);
+  width: 100%; height: 100%;
+}
+#flyer-template.theme-dark .t-top-banner,
+#flyer-template.theme-dark .t-date-banner {
+  background: linear-gradient(to right, #1d0342, #4c08b5);
+}
+#flyer-template.theme-dark .t-image-box {
+  background-color: #1a1a1a;
+  box-shadow: 0 0 40px rgba(133, 55, 166, 0.4);
+}
+#flyer-template.theme-dark .t-right-texts .line1 { color: #ffffff; }
+#flyer-template.theme-dark .t-right-texts .line2 { color: #d6bdf0; }
+#flyer-template.theme-dark .t-yt { color: #ffffff; }
+#flyer-template.theme-dark .t-bottom-info .name { color: #ffffff; }
+#flyer-template.theme-dark .t-bottom-info .desc { color: #cccccc; }
+#flyer-template.theme-dark .t-bottom-right { background-color: transparent; }
+/* Usar un brillo blanco para que el logo se vea si es transparente y oscuro, o simplemente fondo blanco con borde */
+#flyer-template.theme-dark .t-bottom-right img { filter: drop-shadow(0 0 10px rgba(255,255,255,0.8)); }
+
+/* ─── TEMA: MINIMALISTA ─── */
+#flyer-template.theme-minimal { background-color: #ffffff; }
+#flyer-template.theme-minimal .t-purple-bg { display: none; }
+#flyer-template.theme-minimal .t-top-banner {
+  background: transparent; color: #111;
+  border-left: 12px solid #8537a6;
+  padding-left: 33px; height: 60px;
+}
+#flyer-template.theme-minimal .t-date-banner {
+  background: #f4f4f4; color: #8537a6;
+  border-left: 12px solid #8537a6;
+  justify-content: flex-start;
+  padding-left: 33px; width: calc(71% - 33px);
+}
+#flyer-template.theme-minimal .t-image-box {
+  background-color: #f4f4f4;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+  border: 1px solid #eaeaea;
+}
+#flyer-template.theme-minimal .t-right-texts .line1 { color: #333; }
+#flyer-template.theme-minimal .t-right-texts .line2 { color: #8537a6; }
+#flyer-template.theme-minimal .t-bottom-info .name { color: #111; }
+#flyer-template.theme-minimal .t-bottom-info .desc { color: #555; }
+#flyer-template.theme-minimal .t-bottom-right { background-color: transparent; }
+
+/* ═══════════════════════════════════════════
    MODAL MOBILE  (imagen renderizada)
    ═══════════════════════════════════════════ */
 .mobile-modal {

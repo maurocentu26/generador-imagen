@@ -9,6 +9,7 @@ let currentPhotoDataUrl = null; // foto actual en base64
 /** Lee los valores del formulario */
 function getFormValues() {
   return {
+    theme: document.getElementById('inTheme').value,
     date: document.getElementById('inDate').value,
     name: document.getElementById('inName').value,
     desc: document.getElementById('inDesc').value,
@@ -23,6 +24,10 @@ function toTitleCase(str) {
 
 /** Aplica valores al formulario + plantilla */
 function applyValues(v) {
+  const themeVal = v.theme || 'theme-classic';
+  document.getElementById('inTheme').value = themeVal;
+  document.getElementById('flyer-template').className = themeVal;
+
   document.getElementById('inDate').value = v.date || '';
   document.getElementById('inName').value = v.name || '';
   document.getElementById('inDesc').value = v.desc || '';
@@ -86,6 +91,14 @@ function bindText(inputId, outId) {
 bindText('inDate', 'outDate');
 bindText('inName', 'outName');
 bindText('inDesc', 'outDesc');
+
+const themeSelector = document.getElementById('inTheme');
+if (themeSelector) {
+  themeSelector.addEventListener('change', (e) => {
+    document.getElementById('flyer-template').className = e.target.value;
+    autosave();
+  });
+}
 
 // ─── FOTO: render con canvas interno para fix de object-fit ───────────────────
 
