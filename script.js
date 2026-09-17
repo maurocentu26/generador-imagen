@@ -16,29 +16,68 @@ function getFormValues() {
   };
 }
 
+/** Convierte a formato Título (Title Case) */
+function toTitleCase(str) {
+  return str.toLowerCase().replace(/(?:^|[\s\-\_])\w/g, match => match.toUpperCase());
+}
+
 /** Aplica valores al formulario + plantilla */
 function applyValues(v) {
   document.getElementById('inDate').value = v.date || '';
   document.getElementById('inName').value = v.name || '';
   document.getElementById('inDesc').value = v.desc || '';
 
+  const nameVal = toTitleCase(v.name || '');
+
   document.getElementById('outDate').innerHTML = (v.date || '').replace(/\n/g, '<br>');
-  document.getElementById('outName').innerHTML = (v.name || '').replace(/\n/g, '<br>');
+  document.getElementById('outName').innerHTML = nameVal.replace(/\n/g, '<br>');
   document.getElementById('outDesc').innerHTML = (v.desc || '').replace(/\n/g, '<br>');
 
   if (v.photo) {
     currentPhotoDataUrl = v.photo;
     renderPhotoOnCanvas(v.photo);
   }
+  adjustTextFit();
 }
 
-// ─── SINCRONIZACIÓN TEXTO ─────────────────────────────────────────────────────
+// ─── SINCRONIZACIÓN TEXTO Y AUTOAJUSTE ────────────────────────────────────────
+
+function adjustTextFit() {
+  const container = document.querySelector('.t-bottom-info');
+  const nameEl = document.getElementById('outName');
+  const descEl = document.getElementById('outDesc');
+  
+  if (!container || !nameEl || !descEl) return;
+  
+  // Restaurar a tamaños predeterminados
+  nameEl.style.fontSize = '40px';
+  descEl.style.fontSize = '32px';
+  
+  let nameSize = 40;
+  let descSize = 32;
+  
+  // Altura máxima permitida para el cuadro de info (aprox el 15% restante de 1000px = 150px)
+  const MAX_HEIGHT = 150;
+  
+  // Achicar fuente si el contenido excede el espacio
+  while (container.scrollHeight > MAX_HEIGHT && descSize > 14) {
+    nameSize -= 1;
+    descSize -= 1;
+    nameEl.style.fontSize = nameSize + 'px';
+    descEl.style.fontSize = descSize + 'px';
+  }
+}
 
 function bindText(inputId, outId) {
   const el = document.getElementById(inputId);
   if (el) {
     el.addEventListener('input', (e) => {
-      document.getElementById(outId).innerHTML = e.target.value.replace(/\n/g, '<br>');
+      let val = e.target.value;
+      if (inputId === 'inName') {
+        val = toTitleCase(val);
+      }
+      document.getElementById(outId).innerHTML = val.replace(/\n/g, '<br>');
+      adjustTextFit();
       autosave();
     });
   }

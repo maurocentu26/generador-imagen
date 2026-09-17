@@ -159,10 +159,10 @@ button:hover { background: #5046e5; }
   position: absolute; left: 0; top: 83%; width: 71%; text-align: center;
 }
 .t-bottom-info .name {
-  font-family: 'Anton', sans-serif; font-size: 40px; font-weight: 400; color: #000; margin: 0; line-height: 1; letter-spacing: 1px; text-transform: capitalize;
+  font-family: 'Anton', sans-serif; font-size: 40px; font-weight: 400; color: #000; margin: 0; line-height: 1; letter-spacing: 1px;
 }
 .t-bottom-info .desc {
-  font-family: 'Raleway', sans-serif; font-size: 24px; color: #000; margin: 8px 0 0 0;
+  font-family: 'Raleway', sans-serif; font-size: 32px; font-weight: 600; color: #000; margin: 8px 0 0 0;
 }
 
 .t-bottom-right {
