@@ -51,10 +51,10 @@ function adjustTextFit() {
   
   // Restaurar a tamaños predeterminados
   nameEl.style.fontSize = '40px';
-  descEl.style.fontSize = '32px';
+  descEl.style.fontSize = '24px';
   
   let nameSize = 40;
-  let descSize = 32;
+  let descSize = 24;
   
   // Altura máxima permitida para el cuadro de info (aprox el 15% restante de 1000px = 150px)
   const MAX_HEIGHT = 150;
